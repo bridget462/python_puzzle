@@ -15,7 +15,7 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
 
 #This procedure finds the next empty square to fill on the Sudoku grid
 # return (row, col) or (-1, -1)
-def findNextCellToFill(grid):
+def find_first_empty_cell(grid):
     #Look for an unfilled grid location
     for row in range(0, 9):
         for col in range(0, 9):
@@ -24,7 +24,7 @@ def findNextCellToFill(grid):
     return -1,-1
 
 #This procedure checks if setting the (i, j) square (cell) to e is valid
-def isValid(grid, row, col, val):
+def is_cell_valid(grid, row, col, val):
     # row validation
     is_row_valid = all([val != grid[row][other_col] for other_col in range(9)])
     if not is_row_valid:
@@ -49,7 +49,7 @@ def isValid(grid, row, col, val):
 
 
 # IMPORTANT: This procedure makes implications based on existing numbers on squares
-def makeImplications(grid, row, col, val):
+def make_implications(grid, row, col, val):
 
     global sectors
 
@@ -92,14 +92,14 @@ def makeImplications(grid, row, col, val):
             #check if the vset is a singleton
             if len(left) == 1:
                 val = left.pop()
-                if isValid(grid, sin[0], sin[1], val):
+                if is_cell_valid(grid, sin[0], sin[1], val):
                     grid[sin[0]][sin[1]] = val
                     impl.append((sin[0], sin[1], val))
 
     return impl
 
 #This procedure undoes all the implications
-def undoImplications(grid, impl):
+def undo_implications(grid, impl):
     for i in range(len(impl)):
         grid[impl[i][0]][impl[i][1]] = EMPTY
     return
@@ -108,30 +108,30 @@ def undoImplications(grid, impl):
 #This procedure fills in the missing squares of a Sudoku puzzle
 #obeying the Sudoku rules by guessing when it has to and performing
 #implications when it can
-def solveSudokuOpt(grid, i = 0, j = 0):
+def solve_sudoku(grid, i = 0, j = 0):
 
     global backtracks
 
     #find the next empty cell to fill
-    i, j = findNextCellToFill(grid)
+    i, j = find_first_empty_cell(grid)
     if i == -1:
         return True
 
     for e in range(1, 10):
         #Try different values in i, j location
-        if isValid(grid, i, j, e):
+        if is_cell_valid(grid, i, j, e):
 
-            impl = makeImplications(grid, i, j, e)
+            impl = make_implications(grid, i, j, e)
             
-            if solveSudokuOpt(grid, i, j):
+            if solve_sudoku(grid, i, j):
                 return True
             #Undo the current cell for backtracking
             backtracks += 1
-            undoImplications(grid, impl)
+            undo_implications(grid, impl)
 
     return False
 
-def printSudoku(grid):
+def print_sudoku(grid):
     numrow = 0
     for row in grid:
         if numrow % 3 == 0 and numrow != 0:
@@ -181,8 +181,8 @@ diff  = [[0,0,5,3,0,0,0,0,0],
          [0,0,0,0,0,9,7,0,0]]
 
 
-solveSudokuOpt(inp2)
-printSudoku(inp2)
+solve_sudoku(inp2)
+print_sudoku(inp2)
 print ('Backtracks = ', backtracks)
 
 
