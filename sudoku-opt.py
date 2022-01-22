@@ -95,11 +95,6 @@ def makeImplications(grid, row, col, val):
                     grid[sin[0]][sin[1]] = val
                     impl.append((sin[0], sin[1], val))
 
-    print("grid state:")
-    print(grid)
-    print()
-    print(f"implication at {row, col, val}")
-    print(impl)
     return impl
 
 #This procedure undoes all the implications
