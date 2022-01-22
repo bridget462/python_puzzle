@@ -6,6 +6,7 @@ import numpy as np
 #obeying the rules of Sudoku
 
 backtracks = 0
+EMPTY = 0 # empty cell value
 
 #x varies from entry1 to entry2 - 1, y varies from entry3 to entry4 - 1 
 sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
@@ -18,7 +19,7 @@ def findNextCellToFill(grid):
     #Look for an unfilled grid location
     for row in range(0, 9):
         for col in range(0, 9):
-            if grid[row][col] == 0:
+            if grid[row][col] == EMPTY:
                 return row,col
     return -1,-1
 
@@ -64,13 +65,13 @@ def makeImplications(grid, row, col, val):
         vset = {1, 2, 3, 4, 5, 6, 7, 8, 9}
         for x in range(sectors[k][0], sectors[k][1]):
             for y in range(sectors[k][2], sectors[k][3]):
-                if grid[x][y] != 0:
+                if grid[x][y] != EMPTY:
                     vset.remove(grid[x][y])
 
         #attach copy of vset to each missing square in ith sector
         for x in range(sectors[k][0], sectors[k][1]):
             for y in range(sectors[k][2], sectors[k][3]):
-                if grid[x][y] == 0:
+                if grid[x][y] == EMPTY:
                     sectinfo.append([x, y, vset.copy()])
         
         for m in range(len(sectinfo)):
@@ -100,7 +101,7 @@ def makeImplications(grid, row, col, val):
 #This procedure undoes all the implications
 def undoImplications(grid, impl):
     for i in range(len(impl)):
-        grid[impl[i][0]][impl[i][1]] = 0
+        grid[impl[i][0]][impl[i][1]] = EMPTY
     return
 
 
