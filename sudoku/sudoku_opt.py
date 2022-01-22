@@ -1,17 +1,11 @@
-import numpy as np
-
-#Programming for the Puzzled -- Srini Devadas
-#You Will Never Want to Play Sudoku Again
-#Given a partially filled in Sudoku board, complete the puzzle
-#obeying the rules of Sudoku
-
-backtracks = 0
+backtracks = 0 # to count how many backtrack call has been made
 EMPTY = 0 # empty cell value
 
 #x varies from entry1 to entry2 - 1, y varies from entry3 to entry4 - 1 
 sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 3, 6], [3, 6, 3, 6], [6, 9, 3, 6],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
+
 
 #This procedure finds the next empty square to fill on the Sudoku grid
 # return (row, col) or (-1, -1)
@@ -21,7 +15,8 @@ def find_first_empty_cell(grid):
         for col in range(0, 9):
             if grid[row][col] == EMPTY:
                 return row,col
-    return -1,-1
+    return -1, -1
+
 
 #This procedure checks if setting the (i, j) square (cell) to e is valid
 def is_cell_valid(grid, row, col, val):
@@ -98,6 +93,7 @@ def make_implications(grid, row, col, val):
 
     return impl
 
+
 #This procedure undoes all the implications
 def undo_implications(grid, impl):
     for i in range(len(impl)):
@@ -131,6 +127,7 @@ def solve_sudoku(grid, i = 0, j = 0):
 
     return False
 
+
 def print_sudoku(grid):
     numrow = 0
     for row in grid:
@@ -140,48 +137,8 @@ def print_sudoku(grid):
         numrow += 1       
     return
 
-example_girds = {
-    "normal1" : 
-        [[5,1,7,6,0,0,0,3,4],
-         [2,8,9,0,0,4,0,0,0],
-         [3,4,6,2,0,5,0,9,0],
-         [6,0,2,0,0,0,0,1,0],
-         [0,3,8,0,0,6,0,4,7],
-         [0,0,0,0,0,0,0,0,0],
-         [0,9,0,0,0,0,0,7,8],
-         [7,0,3,4,0,0,5,6,0],
-         [0,0,0,0,0,0,0,0,0]],
-    "normal2": 
-        [[5,1,7,6,0,0,0,3,4],
-         [0,8,9,0,0,4,0,0,0],
-         [3,0,6,2,0,5,0,9,0],
-         [6,0,0,0,0,0,0,1,0],
-         [0,3,0,0,0,6,0,4,7],
-         [0,0,0,0,0,0,0,0,0],
-         [0,9,0,0,0,0,0,7,8],
-         [7,0,3,4,0,0,5,6,0],
-         [0,0,0,0,0,0,0,0,0]],
-    "hard": 
-        [[8,5,0,0,0,2,4,0,0],
-         [7,2,0,0,0,0,0,0,9],
-         [0,0,4,0,0,0,0,0,0],
-         [0,0,0,1,0,7,0,0,2],
-         [3,0,5,0,0,0,9,0,0],
-         [0,4,0,0,0,0,0,0,0],
-         [0,0,0,0,8,0,0,7,0],
-         [0,1,7,0,0,0,0,0,0],
-         [0,0,0,0,3,6,0,4,0]],
-    "diff":
-        [[0,0,5,3,0,0,0,0,0],
-         [8,0,0,0,0,0,0,2,0],
-         [0,7,0,0,1,0,5,0,0],
-         [4,0,0,0,0,5,3,0,0],
-         [0,1,0,0,7,0,0,0,6],
-         [0,0,3,2,0,0,0,8,0],
-         [0,6,0,5,0,0,0,0,9],
-         [0,0,4,0,0,0,0,3,0],
-         [0,0,0,0,0,9,7,0,0]]        
-}
+
+from input import example_girds
 
 solve_sudoku(example_girds["normal1"])
 print_sudoku(example_girds["normal1"])
