@@ -7,6 +7,28 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
 
 
+#This procedure fills in the missing squares of a Sudoku puzzle
+#obeying the Sudoku rules by guessing when it has to and performing
+#implications when it can
+def solve_sudoku(grid, i = 0, j = 0):
+    global backtracks # for performance counting
+    #find the next empty cell to fill
+    i, j = find_first_empty_cell(grid)
+    if i == -1:
+        return True
+
+    for e in range(1, 10):
+        #Try different values in i, j location
+        if is_cell_valid(grid, i, j, e):
+            impl = make_implications(grid, i, j, e)
+            if solve_sudoku(grid, i, j):
+                return True
+            #Undo the current cell for backtracking
+            backtracks += 1
+            undo_implications(grid, impl)
+    return False
+
+
 #This procedure finds the next empty square to fill on the Sudoku grid
 # return (row, col) or (-1, -1)
 def find_first_empty_cell(grid):
@@ -89,28 +111,6 @@ def undo_implications(grid, impl):
     for i in range(len(impl)):
         grid[impl[i][0]][impl[i][1]] = EMPTY
     return
-
-
-#This procedure fills in the missing squares of a Sudoku puzzle
-#obeying the Sudoku rules by guessing when it has to and performing
-#implications when it can
-def solve_sudoku(grid, i = 0, j = 0):
-    global backtracks # for performance counting
-    #find the next empty cell to fill
-    i, j = find_first_empty_cell(grid)
-    if i == -1:
-        return True
-
-    for e in range(1, 10):
-        #Try different values in i, j location
-        if is_cell_valid(grid, i, j, e):
-            impl = make_implications(grid, i, j, e)
-            if solve_sudoku(grid, i, j):
-                return True
-            #Undo the current cell for backtracking
-            backtracks += 1
-            undo_implications(grid, impl)
-    return False
 
 
 def print_sudoku(grid):
