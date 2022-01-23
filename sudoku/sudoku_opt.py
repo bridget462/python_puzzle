@@ -20,10 +20,11 @@ def solve_sudoku(grid, row = 0, col = 0):
     for num in range(1, 10):
         if not will_cell_be_valid(grid, row, col, num):
             continue
-        impl = make_implications(grid, row, col, num)
+
+        # NOTE: do_implications modify grid
+        impl = do_implications(grid, row, col, num) 
         if solve_sudoku(grid, row, col):
             return True
-        #Undo the current cell for backtracking
         backtracks += 1
         undo_implications(grid, impl)
     return False
@@ -63,7 +64,8 @@ def will_cell_be_valid(grid, row, col, num_to_fill):
 
 
 # IMPORTANT: This procedure makes implications based on existing numbers on squares
-def make_implications(grid, row, col, num):
+# mutate grid based on implication and return conducted implications to undo it later if necessary
+def do_implications(grid, row, col, num):
     global sectors
 
     grid[row][col] = num
