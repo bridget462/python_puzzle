@@ -1,7 +1,7 @@
 # global variables
 backtracks = 0 # to count how many backtrack call has been made
 EMPTY = 0 # empty cell value
-#x varies from entry1 to entry2 - 1, y varies from entry3 to entry4 - 1 
+# x varies from entry1 to entry2 - 1, y varies from entry3 to entry4 - 1 
 sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 3, 6], [3, 6, 3, 6], [6, 9, 3, 6],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
@@ -40,8 +40,6 @@ def find_first_empty_cell(grid):
     return -1, -1
 
 
-# NOTE: 自分自身の場所は例外的にスキップすべきだけど, どこで行ってる? <- gridに記入うするまえだから必要ないのか!
-# 記入する前に判断したいのならisではなくwillのほうが適切な名前では?
 # check filling (row, col) as num will create valid grid
 def will_cell_be_valid(grid, row, col, num_to_fill):
     # row validation
@@ -54,7 +52,7 @@ def will_cell_be_valid(grid, row, col, num_to_fill):
     if not is_col_valid:
         return False
 
-    # subsection validation
+    # section validation
     section_row_start, section_col_start = 3 * (row//3), 3 * (col//3)
     for other_row in range(section_row_start, section_row_start+3):
         for other_col in range(section_col_start, section_col_start+3):
@@ -63,8 +61,7 @@ def will_cell_be_valid(grid, row, col, num_to_fill):
     return True
 
 
-# IMPORTANT: This procedure makes implications based on existing numbers on squares
-# mutate grid based on implication and return conducted implications to undo it later if necessary
+# mutate grid based on implication and return created implications to undo it later if necessary
 def do_implications(grid, row, col, num):
     global sectors
 
