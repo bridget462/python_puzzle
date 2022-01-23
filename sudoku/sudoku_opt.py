@@ -7,6 +7,7 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
 
 
+# fill numbers to grid if its valid sudoku puzzle and return True else return False
 def solve_sudoku(grid, row = 0, col = 0):
     global backtracks # for performance counting
     #find the next empty cell to fill
@@ -121,7 +122,14 @@ def print_sudoku(grid):
 
 # example input
 from input import example_girds
+from output import example_filled_grid
 
-solve_sudoku(example_girds["normal2"])
-print_sudoku(example_girds["normal2"])
+grid = example_girds["normal2"]
+filled_grid = example_filled_grid["normal2"]
+
+solve_sudoku(grid)
+print_sudoku(grid)
 print ('Backtracks = ', backtracks)
+
+# for testing
+print(grid == filled_grid)
