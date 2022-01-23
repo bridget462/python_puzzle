@@ -10,18 +10,20 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
 #This procedure fills in the missing squares of a Sudoku puzzle
 #obeying the Sudoku rules by guessing when it has to and performing
 #implications when it can
-def solve_sudoku(grid, i = 0, j = 0):
+def solve_sudoku(grid, row = 0, col = 0):
     global backtracks # for performance counting
     #find the next empty cell to fill
-    i, j = find_first_empty_cell(grid)
-    if i == -1:
+    row, col = find_first_empty_cell(grid)
+
+    # EDGE CASE: grid already filled
+    if (row, col) == (-1, -1):
         return True
 
-    for e in range(1, 10):
+    for num in range(1, 10):
         #Try different values in i, j location
-        if is_cell_valid(grid, i, j, e):
-            impl = make_implications(grid, i, j, e)
-            if solve_sudoku(grid, i, j):
+        if is_cell_valid(grid, row, col, num):
+            impl = make_implications(grid, row, col, num)
+            if solve_sudoku(grid, row, col):
                 return True
             #Undo the current cell for backtracking
             backtracks += 1
@@ -36,19 +38,19 @@ def find_first_empty_cell(grid):
     for row in range(0, 9):
         for col in range(0, 9):
             if grid[row][col] == EMPTY:
-                return row,col
+                return row, col
     return -1, -1
 
 
 #This procedure checks if setting the (i, j) square (cell) to e is valid
-def is_cell_valid(grid, row, col, val):
+def is_cell_valid(grid, row, col, num):
     # row validation
-    is_row_valid = all([val != grid[row][other_col] for other_col in range(9)])
+    is_row_valid = all([num != grid[row][other_col] for other_col in range(9)])
     if not is_row_valid:
         return False
 
     # col validation
-    is_col_valid = all([val != grid[other_row][col] for other_row in range(9)])
+    is_col_valid = all([num != grid[other_row][col] for other_row in range(9)])
     if not is_col_valid:
         return False
 
@@ -60,17 +62,17 @@ def is_cell_valid(grid, row, col, val):
             # これがなくてもエラーでないのはなぜだ?
             if other_row == row and other_col == col:
                 continue
-            if grid[other_row][other_col] == val:
+            if grid[other_row][other_col] == num:
                 return False
     return True
 
 
 # IMPORTANT: This procedure makes implications based on existing numbers on squares
-def make_implications(grid, row, col, val):
+def make_implications(grid, row, col, num):
     global sectors
 
-    grid[row][col] = val
-    impl = [(row, col, val)]
+    grid[row][col] = num
+    impl = [(row, col, num)]
 
     for k in range(len(sectors)):
         sectinfo = []
@@ -99,10 +101,10 @@ def make_implications(grid, row, col, val):
             left = left.difference(colv)
             #check if the vset is a singleton
             if len(left) == 1:
-                val = left.pop()
-                if is_cell_valid(grid, sin[0], sin[1], val):
-                    grid[sin[0]][sin[1]] = val
-                    impl.append((sin[0], sin[1], val))
+                num = left.pop()
+                if is_cell_valid(grid, sin[0], sin[1], num):
+                    grid[sin[0]][sin[1]] = num
+                    impl.append((sin[0], sin[1], num))
     return impl
 
 
