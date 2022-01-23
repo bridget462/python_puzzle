@@ -7,9 +7,6 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
 
 
-#This procedure fills in the missing squares of a Sudoku puzzle
-#obeying the Sudoku rules by guessing when it has to and performing
-#implications when it can
 def solve_sudoku(grid, row = 0, col = 0):
     global backtracks # for performance counting
     #find the next empty cell to fill
@@ -20,19 +17,18 @@ def solve_sudoku(grid, row = 0, col = 0):
         return True
 
     for num in range(1, 10):
-        #Try different values in i, j location
-        if is_cell_valid(grid, row, col, num):
-            impl = make_implications(grid, row, col, num)
-            if solve_sudoku(grid, row, col):
-                return True
-            #Undo the current cell for backtracking
-            backtracks += 1
-            undo_implications(grid, impl)
+        if not will_cell_be_valid(grid, row, col, num):
+            continue
+        impl = make_implications(grid, row, col, num)
+        if solve_sudoku(grid, row, col):
+            return True
+        #Undo the current cell for backtracking
+        backtracks += 1
+        undo_implications(grid, impl)
     return False
 
 
-#This procedure finds the next empty square to fill on the Sudoku grid
-# return (row, col) or (-1, -1)
+# return first empty cell (row, col) or (-1, -1) if every cell is filled
 def find_first_empty_cell(grid):
     #Look for an unfilled grid location
     for row in range(0, 9):
@@ -42,15 +38,17 @@ def find_first_empty_cell(grid):
     return -1, -1
 
 
-#This procedure checks if setting the (i, j) square (cell) to e is valid
-def is_cell_valid(grid, row, col, num):
+# NOTE: 自分自身の場所は例外的にスキップすべきだけど, どこで行ってる? <- gridに記入うするまえだから必要ないのか!
+# 記入する前に判断したいのならisではなくwillのほうが適切な名前では?
+# check filling (row, col) as num will create valid grid
+def will_cell_be_valid(grid, row, col, num_to_fill):
     # row validation
-    is_row_valid = all([num != grid[row][other_col] for other_col in range(9)])
+    is_row_valid = all([num_to_fill != grid[row][other_col] for other_col in range(9)])
     if not is_row_valid:
         return False
 
     # col validation
-    is_col_valid = all([num != grid[other_row][col] for other_row in range(9)])
+    is_col_valid = all([num_to_fill != grid[other_row][col] for other_row in range(9)])
     if not is_col_valid:
         return False
 
@@ -58,11 +56,7 @@ def is_cell_valid(grid, row, col, num):
     section_row_start, section_col_start = 3 * (row//3), 3 * (col//3)
     for other_row in range(section_row_start, section_row_start+3):
         for other_col in range(section_col_start, section_col_start+3):
-            # NOTE: 自分自身の場所は例外的にスキップすべきだけど, どこで行ってる?
-            # これがなくてもエラーでないのはなぜだ?
-            if other_row == row and other_col == col:
-                continue
-            if grid[other_row][other_col] == num:
+            if grid[other_row][other_col] == num_to_fill:
                 return False
     return True
 
@@ -102,7 +96,7 @@ def make_implications(grid, row, col, num):
             #check if the vset is a singleton
             if len(left) == 1:
                 num = left.pop()
-                if is_cell_valid(grid, sin[0], sin[1], num):
+                if will_cell_be_valid(grid, sin[0], sin[1], num):
                     grid[sin[0]][sin[1]] = num
                     impl.append((sin[0], sin[1], num))
     return impl
@@ -128,6 +122,6 @@ def print_sudoku(grid):
 # example input
 from input import example_girds
 
-solve_sudoku(example_girds["normal1"])
-print_sudoku(example_girds["normal1"])
+solve_sudoku(example_girds["normal2"])
+print_sudoku(example_girds["normal2"])
 print ('Backtracks = ', backtracks)
