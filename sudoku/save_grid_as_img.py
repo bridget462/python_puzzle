@@ -18,7 +18,7 @@ def save_grid_as_img(grid, title, implications=None, is_undo=False, path="sudoku
     if implications:
         highlight_implication_anotation(ax, implications, is_undo)
 
-    plt.xlabel(title)
+    ax.set_xlabel(title, loc='left')
     path += "/" if path[-1] != "/" else ""
     plt.savefig(f"{path}{title}.png")
     print(f"sudoku grid saved {path}{title}.png")
