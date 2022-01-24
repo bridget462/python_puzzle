@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 # for visualizing
-def save_grid_as_img(grid, title, implications=None, path="sudoku/img", ):
+def save_grid_as_img(grid, title, implications=None, is_undo=False, path="sudoku/img"):
     # NOTE for graph background
     zero_grids = [[0 for col in range(len(grid[0]))] for row in range(len(grid))]
 
@@ -16,7 +16,7 @@ def save_grid_as_img(grid, title, implications=None, path="sudoku/img", ):
 
     # highlight implication
     if implications:
-        highlight_implication_anotation(ax, implications)
+        highlight_implication_anotation(ax, implications, is_undo)
 
     plt.xlabel(title)
     path += "/" if path[-1] != "/" else ""
@@ -25,9 +25,12 @@ def save_grid_as_img(grid, title, implications=None, path="sudoku/img", ):
     plt.close()
 
 
-def highlight_implication_anotation(ax, implications):
+def highlight_implication_anotation(ax, implications, is_undo):
     for (row, col, num) in implications:
-        ax.text(col, row, num, color="blue", ha="center", va="center")
+        if not is_undo:
+            ax.text(col, row, num, color="blue", ha="center", va="center")
+        else:
+            ax.text(col, row, 0, color="red", ha="center", va="center")
 
 
 # testing

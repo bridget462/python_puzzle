@@ -30,6 +30,8 @@ def solve_sudoku(grid, row = 0, col = 0):
             return True
         backtracks += 1
         undo_implications(grid, impl)
+        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl undo", impl, True)
+
     return False
 
 
