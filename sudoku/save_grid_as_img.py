@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 # for visualizing
-def save_grid_as_img(grid, title, path="sudoku/img"):
+def save_grid_as_img(grid, title, implications=None, path="sudoku/img", ):
     # NOTE for graph background
     zero_grids = [[0 for col in range(len(grid[0]))] for row in range(len(grid))]
 
@@ -13,11 +13,22 @@ def save_grid_as_img(grid, title, path="sudoku/img"):
             # NOTE: row, colの順番に注意!
             ax.text(col, row, grid[row][col], 
                     color="black", ha="center", va="center")
+
+    # highlight implication
+    if implications:
+        highlight_implication_anotation(ax, implications)
+
     plt.xlabel(title)
     path += "/" if path[-1] != "/" else ""
     plt.savefig(f"{path}{title}.png")
     print(f"sudoku grid saved {path}{title}.png")
     plt.close()
+
+
+def highlight_implication_anotation(ax, implications):
+    for (row, col, num) in implications:
+        ax.text(col, row, num, color="blue", ha="center", va="center")
+
 
 # testing
 if __name__ == "__main__":
