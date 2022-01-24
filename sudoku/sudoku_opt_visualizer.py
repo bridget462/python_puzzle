@@ -23,8 +23,9 @@ def solve_sudoku(grid, row = 0, col = 0):
             continue
 
         # NOTE: do_implications modify grid
-        save_grid_as_img(grid, f"solve sudoku at backtrack {backtracks} {row, col, num}")
+        save_grid_as_img(grid, f"#backtrack {backtracks}-1 solve_sudoku {row, col, num}")
         impl = do_implications(grid, row, col, num) 
+        # save_grid_as_img(grid, f"#backtrack {backtracks}-2 after implication {row, col, num}")
         if solve_sudoku(grid, row, col):
             return True
         backtracks += 1
