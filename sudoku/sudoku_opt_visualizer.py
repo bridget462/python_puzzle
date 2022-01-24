@@ -6,7 +6,7 @@ sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
             [0, 3, 3, 6], [3, 6, 3, 6], [6, 9, 3, 6],
             [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
 
-from save_grid_as_img import save_grid_as_img
+from save_sudoku_grid_as_img import save_sudoku_grid_as_img
 
 # fill numbers to grid if its valid sudoku puzzle and return True else return False
 def solve_sudoku(grid, row = 0, col = 0):
@@ -23,14 +23,14 @@ def solve_sudoku(grid, row = 0, col = 0):
             continue
 
         # NOTE: do_implications modify grid
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num}", row, col)
+        save_sudoku_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num}", row, col)
         impl = do_implications(grid, row, col, num) 
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl", row, col, impl)
+        save_sudoku_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl", row, col, impl)
         if solve_sudoku(grid, row, col):
             return True
         backtracks += 1
         undo_implications(grid, impl)
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl undo", row, col, impl, True)
+        save_sudoku_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl undo", row, col, impl, True)
 
     return False
 

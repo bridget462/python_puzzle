@@ -2,9 +2,11 @@
 backtracks = 0 # to count how many backtrack call has been made
 EMPTY = 0 # empty cell value
 # x varies from entry1 to entry2 - 1, y varies from entry3 to entry4 - 1 
-sectors = [ [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
-            [0, 3, 3, 6], [3, 6, 3, 6], [6, 9, 3, 6],
-            [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
+section_bounds = [
+    # [row_start, row_end, col_start, col_end]
+    [0, 3, 0, 3], [3, 6, 0, 3], [6, 9, 0, 3],
+    [0, 3, 3, 6], [3, 6, 3, 6], [6, 9, 3, 6],
+    [0, 3, 6, 9], [3, 6, 6, 9], [6, 9, 6, 9] ]
 
 
 # fill numbers to grid if its valid sudoku puzzle and return True else return False
@@ -13,7 +15,7 @@ def solve_sudoku(grid, row = 0, col = 0):
     #find the next empty cell to fill
     row, col = find_first_empty_cell(grid)
 
-    # EDGE CASE: grid already filled
+    # BASE CASE: grid already filled
     if (row, col) == (-1, -1):
         return True
 
@@ -62,25 +64,30 @@ def will_cell_be_valid(grid, row, col, num_to_fill):
 
 
 # mutate grid based on implication and return created implications to undo it later if necessary
-def do_implications(grid, row, col, num):
-    global sectors
+# make implication starting from (row_start, col_start) number
+def do_implications(grid, row_start, col_start, num):
+    global section_bounds
 
-    grid[row][col] = num
-    impl = [(row, col, num)]
+    grid[row_start][col_start] = num
+    impl = [(row_start, col_start, num)]
 
-    for k in range(len(sectors)):
+    # for each 3x3 section
+    for (section_row_start, section_row_end, section_col_start, section_col_end) in section_bounds:
         sectinfo = []
-        #find missing elements in ith sector
-        vset = {1, 2, 3, 4, 5, 6, 7, 8, 9}
-        for x in range(sectors[k][0], sectors[k][1]):
-            for y in range(sectors[k][2], sectors[k][3]):
+        remaining_nums = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+
+        # remove already used num in current section
+        for x in range(section_row_start, section_row_end):
+            for y in range(section_col_start, section_col_end):
                 if grid[x][y] != EMPTY:
-                    vset.remove(grid[x][y])
-        #attach copy of vset to each missing square in ith sector
-        for x in range(sectors[k][0], sectors[k][1]):
-            for y in range(sectors[k][2], sectors[k][3]):
+                    remaining_nums.remove(grid[x][y])
+
+        #attach copy of vset to each missing square in current section
+        for x in range(section_row_start, section_row_end):
+            for y in range(section_col_start, section_col_end):
                 if grid[x][y] == EMPTY:
-                    sectinfo.append([x, y, vset.copy()])
+                    sectinfo.append([x, y, remaining_nums.copy()])
+
         for m in range(len(sectinfo)):
             sin = sectinfo[m]
             #find the set of elements on the row corresponding to m and remove them
