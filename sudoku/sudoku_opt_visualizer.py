@@ -23,14 +23,14 @@ def solve_sudoku(grid, row = 0, col = 0):
             continue
 
         # NOTE: do_implications modify grid
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num}")
+        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num}", row, col)
         impl = do_implications(grid, row, col, num) 
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl", impl)
+        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl", row, col, impl)
         if solve_sudoku(grid, row, col):
             return True
         backtracks += 1
         undo_implications(grid, impl)
-        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl undo", impl, True)
+        save_grid_as_img(grid, f"#backtrack {backtracks} solve_sudoku {row, col, num} impl undo", row, col, impl, True)
 
     return False
 

@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 # for visualizing
-def save_grid_as_img(grid, title, implications=None, is_undo=False, path="sudoku/img"):
+def save_grid_as_img(grid, title, current_row, current_col, implications=None, is_undo=False, path="sudoku/img"):
     # NOTE for graph background
-    zero_grids = [[0 for col in range(len(grid[0]))] for row in range(len(grid))]
+    zero_grids = [[255 for col in range(len(grid[0]))] for row in range(len(grid))]
+    zero_grids[current_row][current_col] = 220
 
     fig, ax = plt.subplots()
-    im = ax.imshow(zero_grids, cmap="binary")
+    im = ax.imshow(zero_grids, cmap='gray', vmin=0, vmax=255)
 
     # text anotation on each cell
     for row in range(len(grid)):
@@ -36,4 +37,4 @@ def highlight_implication_anotation(ax, implications, is_undo):
 # testing
 if __name__ == "__main__":
   from input import example_girds
-  save_grid_as_img(example_girds["normal1"], "sample_fig")
+  save_grid_as_img(example_girds["normal1"], "sample_fig", 4, 4)
